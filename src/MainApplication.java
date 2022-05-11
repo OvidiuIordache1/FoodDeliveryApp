@@ -28,7 +28,7 @@ Creare comanda
 Vizualizare comenzi active pentru user
  */
 package src;
-import src.service.MainServices;
+import src.service.Manager;
 
 import java.util.Arrays;
 import java.util.List;
@@ -50,7 +50,7 @@ public class MainApplication {
     public static void main(String[] args) {
 
 
-        MainServices mainServices = new MainServices();
+        Manager manager = new Manager();
 
         Scanner in = new Scanner(System.in);
         boolean close = false;
@@ -60,18 +60,18 @@ public class MainApplication {
             String cmd = in.nextLine().toLowerCase(Locale.ROOT);
             try {
                 switch (cmd) {
-                    case "create_client" -> mainServices.registerClient();
-                    case "create_driver" -> mainServices.registerDriver();
-                    case "login" -> mainServices.login();
-                    case "show_logged_in_user" -> mainServices.afisareUser();
-                    case "add_address_client" -> mainServices.adaugareAdresaClient();
-                    case "create_restaurant" -> mainServices.addRestaurant();
-                    case "create_review_restaurant" -> mainServices.creareReviewRestaurant();
-                    case "create_review_driver" -> mainServices.creareReviewDriver();
-                    case "show_restaurants" -> mainServices.afisareRestaurante();
-                    case "show_menu_restaurant" -> mainServices.afisareMeniuRestaurant();
-                    case "show_reviews_restaurant" -> mainServices.afisareReviewsRestaurant();
-                    case "add_order" -> mainServices.creareOrder();
+                    case "create_client" -> manager.registerClient();
+                    case "create_driver" -> manager.registerDriver();
+                    case "login" -> manager.login();
+                    case "show_logged_in_user" -> manager.afisareUser();
+                    case "add_address_client" -> manager.adaugareAdresaClient();
+                    case "create_restaurant" -> manager.addRestaurant();
+                    case "create_review_restaurant" -> manager.creareReviewRestaurant();
+                    case "create_review_driver" -> manager.creareReviewDriver();
+                    case "show_restaurants" -> manager.afisareRestaurante();
+                    case "show_menu_restaurant" -> manager.afisareMeniuRestaurant();
+                    case "show_reviews_restaurant" -> manager.afisareReviewsRestaurant();
+                    case "add_order" -> manager.creareOrder();
                     case "close" -> close = true;
                 }
             } catch (Exception e) {
