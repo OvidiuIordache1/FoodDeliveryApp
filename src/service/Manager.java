@@ -2,18 +2,18 @@ package src.service;
 
 import src.model.*;
 
+import java.sql.SQLException;
 import java.util.*;
 
 public class Manager {
-//    private final UserService userService = new UserService();
-//    private final RestaurantService restaurantService = new RestaurantService();
+    private UserDbService userDbService;
+    private AddressDbService addressDbService;
+    private FoodDbService foodDbService;
+    private ReviewDbService reviewDbService;
+    private RestaurantDbService restaurantDbService;
+    private OrderDbService orderDbService;
+
     private final InputService inputService = new InputService();
-    private AddressCsvService addressCsvService;
-    private OrderCsvService orderCsvService;
-    private UserCsvService userCsvService;
-    private FoodCsvService foodCsvService;
-    private RestaurantCsvService restaurantCsvService;
-    private ReviewCsvService reviewCsvService;
 
     private Client loggedInClient = null;
     private Driver loggedInDriver = null;
@@ -26,32 +26,27 @@ public class Manager {
     private List<Review> reviews;
 
     public Manager() {
-        addressCsvService = AddressCsvService.getInstance();
-        orderCsvService = OrderCsvService.getInstance();
-        userCsvService = UserCsvService.getInstance();
-        foodCsvService = FoodCsvService.getInstance();
-        restaurantCsvService = RestaurantCsvService.getInstance();
-        reviewCsvService = ReviewCsvService.getInstance();
+        try {
+            userDbService = new UserDbService();
+            addressDbService = new AddressDbService();
+            foodDbService = new FoodDbService();
+            reviewDbService = new ReviewDbService();
+            restaurantDbService = new RestaurantDbService();
+            orderDbService = new OrderDbService();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
-        addressCsvService.getAddressesFromCsv();
-        adrese = addressCsvService.getAdrese();
+        adrese = addressDbService.getAll();
+        foods = foodDbService.getAll();
+        reviews = reviewDbService.getAll();
+        orders = orderDbService.getAll();
 
-        foodCsvService.getFoodsFromCsv();
-        foods = foodCsvService.getFoods();
+        clients = userDbService.getAllClients();
+        drivers = userDbService.getAllDrivers();
 
-        orderCsvService.getOrdersFromCsv(foods, adrese);
-        orders = orderCsvService.getOrders();
+        restaurants = restaurantDbService.getAll();
 
-        reviewCsvService.getReviewsFromCsv();
-        reviews = reviewCsvService.getReviews();
-
-        userCsvService.getClientsFromCsv(adrese, orders);
-        userCsvService.getDriversFromCsv(reviews, orders);
-        clients = userCsvService.getClients();
-        drivers = userCsvService.getDrivers();
-
-        restaurantCsvService.getRestaurantsFromCsv(adrese, foods, reviews);
-        restaurants = restaurantCsvService.getRestaurants();
     }
 
 
@@ -60,11 +55,10 @@ public class Manager {
         clients.add(client);
         adrese.addAll(client.getAdrese());
 
-        userCsvService.setClients(clients);
-        addressCsvService.setAdrese(adrese);
-
-        userCsvService.writeClientsToCsv();
-        addressCsvService.writeAddresesToCsv();
+        for (Address a: client.getAdrese()) {
+            addressDbService.saveAddress(a);
+        }
+        userDbService.saveClient(client);
 
         System.out.println("Client Registered!");
     }
@@ -72,8 +66,7 @@ public class Manager {
     public void registerDriver() {
         Driver driver = inputService.getDriver();
         drivers.add(driver);
-        userCsvService.setDrivers(drivers);
-        userCsvService.writeDriversToCsv();
+        userDbService.saveDriver(driver);
         System.out.println("Driver Registered!");
     }
 
@@ -132,16 +125,14 @@ public class Manager {
         Restaurant restaurant = inputService.getRestaurant();
 
         foods.addAll(restaurant.getMeniu());
-        foodCsvService.setFoods(foods);
-        foodCsvService.writeFoodsToCsv(restaurant.getRestaurantId());
+        for (Food f: restaurant.getMeniu())
+            foodDbService.saveFood(f);
 
         adrese.add(restaurant.getAdresa());
-        addressCsvService.setAdrese(adrese);
-        addressCsvService.writeAddresesToCsv();
+        addressDbService.saveAddress(restaurant.getAdresa());
 
         restaurants.add(restaurant);
-        restaurantCsvService.setRestaurants(restaurants);
-        restaurantCsvService.writeRestaurantsToCsv();
+        restaurantDbService.saveRestaurant(restaurant);
     }
 
 
@@ -205,12 +196,11 @@ public class Manager {
                 restaurant.addReview(review);
                 restaurants.set(nr-1, restaurant);
 
-                restaurantCsvService.setRestaurants(restaurants);
-                restaurantCsvService.writeRestaurantsToCsv();
 
                 reviews.add(review);
-                reviewCsvService.setReviews(reviews);
-                reviewCsvService.writeReviewsToCsv();
+                reviewDbService.saveReview(review);
+
+                reviewDbService.addRestaurantReview(review, nr);
             }
         }
         else {
@@ -230,12 +220,10 @@ public class Manager {
                 driver.addReview(review);
                 drivers.set(nr-1, driver);
 
-                userCsvService.setDrivers(drivers);
-                userCsvService.writeDriversToCsv();
-
                 reviews.add(review);
-                reviewCsvService.setReviews(reviews);
-                reviewCsvService.writeReviewsToCsv();
+                reviewDbService.saveReview(review);
+
+                reviewDbService.addDriverReview(review, nr);
             }
         }
         else {
@@ -271,19 +259,12 @@ public class Manager {
                 Order order = inputService.getOrder(loggedInClient, nr, comanda, address, driverId);
                 driver.addlivrare(order);
 
-
                 var idx = clients.indexOf(loggedInClient);
                 loggedInClient.addComanda(order);
                 clients.set(idx, loggedInClient);
                 orders.add(order);
 
-
-                userCsvService.setClients(clients);
-                userCsvService.setDrivers(drivers);
-                userCsvService.writeDriversToCsv();
-                userCsvService.writeClientsToCsv();
-                orderCsvService.setOrders(orders);
-                orderCsvService.writeOrdersToCsv();
+                orderDbService.saveOrder(order);
             }
         }
         else {

@@ -17,6 +17,11 @@ public class Driver extends User{
         super(username, password, email, nume, prenume, nrTelefon);
     }
 
+    public Driver(String username, String password, String email, String nume, String prenume, String nrTelefon, List<Review> reviews) {
+        super(username, password, email, nume, prenume, nrTelefon);
+        this.reviews = reviews;
+    }
+
     public Driver(String username, String password, String email, String nume, String prenume, String nrTelefon, List<Review> reviews, List<Order> livrari) {
         super(username, password, email, nume, prenume, nrTelefon);
         this.reviews = reviews;

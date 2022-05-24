@@ -11,6 +11,11 @@ public class Client extends User {
         super(username, password, email, nume, prenume, nrTelefon);
     }
 
+    public Client(String username, String password, String email, String nume, String prenume, String nrTelefon, List<Address> adrese) {
+        super(username, password, email, nume, prenume, nrTelefon);
+        this.adrese = adrese;
+    }
+
     public Client(String username, String password, String email, String nume, String prenume, String nrTelefon, List<Order> comenzi, List<Address> adrese) {
         super(username, password, email, nume, prenume, nrTelefon);
         this.comenzi = comenzi;

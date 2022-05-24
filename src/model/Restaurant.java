@@ -13,6 +13,15 @@ public class Restaurant {
 
     private static int nextId = 1;
 
+    public Restaurant(int restaurantId, String nume, Address adresa, String nrTelefon, List<Food> meniu, List<Review> reviews){
+        this.restaurantId = restaurantId;
+        this.nume = nume;
+        this.adresa = adresa;
+        this.nrTelefon = nrTelefon;
+        this.meniu = meniu;
+        this.reviews = reviews;
+    }
+
     public Restaurant(String nume, Address adresa, String nrTelefon, List<Food> meniu, List<Review> reviews){
         this.restaurantId = nextId;
         nextId++;
@@ -33,6 +42,8 @@ public class Restaurant {
     }
 
     public String getRestaurantId() { return String.valueOf(restaurantId); }
+
+    public int getRestaurantId_() { return restaurantId; }
 
     public String getNume() {
         return nume;
@@ -127,6 +138,7 @@ public class Restaurant {
     @Override
     public String toString() {
         return "Restaurant { \n" +
+                "id=" + restaurantId + '\'' +
                 "nume='" + nume + '\'' +
                 ",\nadresa=" + adresa +
                 ",\nnrTelefon=" + nrTelefon + + '\'' +

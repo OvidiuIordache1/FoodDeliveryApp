@@ -31,6 +31,20 @@ public class Address {
         this.ap = ap;
     }
 
+    public Address(int adresaId, String judet, String localitate, String sector, String strada, String nr, String bloc, String scara,
+                   String etaj, String ap ) {
+        this.adresaId = adresaId;
+        this.judet = judet;
+        this.localitate = localitate;
+        this.sector = sector;
+        this.strada = strada;
+        this.nr = nr;
+        this.bloc = bloc;
+        this.scara = scara;
+        this.etaj = etaj;
+        this.ap = ap;
+    }
+
     public int getAdresaId() { return adresaId; }
 
     public void setAdresaId(int id) { this.adresaId = id; }

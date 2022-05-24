@@ -1,5 +1,6 @@
 package src.model;
 
+import java.sql.Date;
 import java.time.LocalDate;
 
 public class Review {
@@ -7,14 +8,22 @@ public class Review {
     private int userId;
     private String mesaj;
     private int nr;
-    private LocalDate data;
+    private Date data;
 
     private static int nextId = 1;
 
-    public Review(int user, String mesaj, int nr, LocalDate data) {
+    public Review(int user, String mesaj, int nr, Date data) {
         this.reviewId = nextId;
         nextId++;
         this.userId = user;
+        this.mesaj = mesaj;
+        this.nr = nr;
+        this.data = data;
+    }
+
+    public Review(int reviewId, int usrId, String mesaj, int nr, Date data) {
+        this.reviewId = reviewId;
+        this.userId = usrId;
         this.mesaj = mesaj;
         this.nr = nr;
         this.data = data;
@@ -46,11 +55,11 @@ public class Review {
         this.nr = nr;
     }
 
-    public LocalDate getData() {
+    public Date getData() {
         return data;
     }
 
-    public void setData(LocalDate data) {
+    public void setData(Date data) {
         this.data = data;
     }
 

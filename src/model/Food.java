@@ -24,6 +24,14 @@ public class Food {
         this.pret = pret;
     }
 
+    public Food(int foodId, String nume, String[] continut, String descriere, double pret){
+        this.foodId = foodId;
+        this.nume = nume;
+        this.continut = continut;
+        this.descriere = descriere;
+        this.pret = pret;
+    }
+
     public int getFoodId() { return foodId; }
 
     public String getNume() {

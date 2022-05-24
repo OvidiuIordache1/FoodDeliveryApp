@@ -5,10 +5,8 @@ User
 Client
 Driver
 Restaurant
-Menu
 Food
 Order
-Delivery
 Review
 */
 
@@ -27,7 +25,11 @@ Creare Review Driver
 Creare comanda
 Vizualizare comenzi active pentru user
  */
+
+// TODO: add colectie sortata
+
 package src;
+import src.service.AuditService;
 import src.service.Manager;
 
 import java.util.Arrays;
@@ -48,8 +50,7 @@ public class MainApplication {
     }
 
     public static void main(String[] args) {
-
-
+        AuditService auditService = new AuditService();
         Manager manager = new Manager();
 
         Scanner in = new Scanner(System.in);
@@ -73,6 +74,9 @@ public class MainApplication {
                     case "show_reviews_restaurant" -> manager.afisareReviewsRestaurant();
                     case "add_order" -> manager.creareOrder();
                     case "close" -> close = true;
+                }
+                if (interogari.contains(cmd)){
+                    auditService.writeAction(cmd);
                 }
             } catch (Exception e) {
                 System.out.println(e);

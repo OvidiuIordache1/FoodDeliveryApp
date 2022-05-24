@@ -2,12 +2,10 @@ package src.service;
 
 import src.model.*;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class InputService {
     public Address getAddress() {
@@ -114,11 +112,11 @@ public class InputService {
         String mesaj = in.nextLine();
         System.out.println("Nr: (0-5)");
         int nr = in.nextInt();
-        LocalDate data = LocalDate.now();
+        java.sql.Date data = new java.sql.Date(System.currentTimeMillis());
         return new Review(user.getUserId(), mesaj, nr, data);
     }
 
     public Order getOrder(User user, int restaurantId, List<Food> comanda, Address address, int driverId) {
-        return new Order(user.getUserId(), restaurantId, comanda, LocalDate.now(), address, "In curs de livrare", driverId);
+        return new Order(user.getUserId(), restaurantId, comanda, new java.sql.Date(System.currentTimeMillis()), address, "In curs de livrare", driverId);
     }
 }

@@ -9,12 +9,12 @@ public class Order {
     private int orderId;
     private int userId;
     private int restaurantId;
+    private int driverId;
     protected List<Food> comanda;
-    protected LocalDate data;
+    protected Date data;
     protected double totalPrice = 0;
     private Address adresa;
     private String status;
-    private int driverId;
 
     private static int nextId = 1;
 
@@ -22,7 +22,7 @@ public class Order {
 
     }
 
-    public Order(int user, int restaurantId, List<Food> comanda, LocalDate data, Address address, String status, int driverId) {
+    public Order(int user, int restaurantId, List<Food> comanda, Date data, Address address, String status, int driverId) {
         this.orderId = nextId;
         nextId++;
         this.userId = user;
@@ -37,21 +37,37 @@ public class Order {
         this.driverId = driverId;
     }
 
+    public Order(int orderId, int user, int restaurantId, int driverId, List<Food> comanda, Date data, Double totalPrice, Address address, String status) {
+        this.orderId = orderId;
+        this.userId = user;
+        this.restaurantId = restaurantId;
+        this.driverId = driverId;
+        this.comanda = comanda;
+        this.data = data;
+        this.totalPrice = totalPrice;
+        this.adresa = address;
+        this.status = status;
+    }
+
     public int getOrderId() {return orderId; }
 
     public int getUserId() {
         return userId;
     }
 
+    public int getRestaurantId() {
+        return restaurantId;
+    }
+
     public void setUserId(int userId) {
         this.userId = userId;
     }
 
-    public LocalDate getData() {
+    public Date getData() {
         return this.data;
     }
 
-    public void setData(LocalDate data) {
+    public void setData(Date data) {
         this.data = data;
     }
 
