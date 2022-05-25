@@ -136,7 +136,8 @@ public class Address {
 
     @Override
     public String toString() {
-        return "judet='" + judet + '\'' +
+        return "id=" + adresaId + '\'' +
+                "judet='" + judet + '\'' +
                 ", localitate='" + localitate + '\'' +
                 ", sector=" + sector +
                 ", strada='" + strada + '\'' +

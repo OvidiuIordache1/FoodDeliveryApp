@@ -37,8 +37,9 @@ public class Order {
         this.driverId = driverId;
     }
 
-    public Order(int orderId, int user, int restaurantId, int driverId, List<Food> comanda, Date data, Double totalPrice, Address address, String status) {
-        this.orderId = orderId;
+    public Order(int user, int restaurantId, int driverId, List<Food> comanda, Date data, Double totalPrice, Address address, String status) {
+        this.orderId = nextId;
+        nextId++;
         this.userId = user;
         this.restaurantId = restaurantId;
         this.driverId = driverId;

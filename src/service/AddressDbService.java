@@ -62,4 +62,42 @@ public class AddressDbService{
 
         return addresses;
     }
+
+    public void updateAddress(int idx, Address address) {
+        String query = "update address set judet = ?, localitate = ?, sector = ?, strada = ?, nr = ?, bloc = ?, scara =?, etaj = ?, ap = ?" +
+                        " where id = ?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setString(1, address.getJudet());
+            preparedStatement.setString(2, address.getLocalitate());
+            preparedStatement.setString(3, address.getSector());
+            preparedStatement.setString(4, address.getStrada());
+            preparedStatement.setString(5, address.getnr());
+            preparedStatement.setString(6, address.getBloc());
+            preparedStatement.setString(7, address.getScara());
+            preparedStatement.setString(8, address.getEtaj());
+            preparedStatement.setString(9, address.getAp());
+            preparedStatement.setInt(10, idx);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void deleteAddress(int nr) {
+        String query = "delete from clients_address where idAddress = ?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setInt(1, nr);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        query = "delete from address where id = ?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setInt(1, nr);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }

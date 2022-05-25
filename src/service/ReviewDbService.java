@@ -1,6 +1,7 @@
 package src.service;
 
 import src.config.DbConnection;
+import src.model.Address;
 import src.model.Food;
 import src.model.Review;
 
@@ -68,6 +69,37 @@ public class ReviewDbService{
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setInt(1, idDriver);
             preparedStatement.setInt(2, review.getReviewId());
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void updateReview(int idx, String mesaj, int nr) {
+        String query = "update reviews set mesaj = ?, nr = ?" +
+                " where id = ?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setString(1, mesaj);
+            preparedStatement.setInt(2, nr);
+            preparedStatement.setInt(3, idx);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void deleteReview(int nr) {
+        String query = "delete from restaurants_reviews where idReview = ?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setInt(1, nr);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        query = "delete from reviews where id = ?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setInt(1, nr);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();

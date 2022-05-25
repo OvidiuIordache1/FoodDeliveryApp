@@ -97,11 +97,40 @@ public class OrderDbService{
                     e.printStackTrace();
                 }
 
-                orders.add(new Order(orderId, userId, restaurantId, driverId, foods, data, totalPrice, address, status));
+                orders.add(new Order(userId, restaurantId, driverId, foods, data, totalPrice, address, status));
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return orders;
+    }
+
+    public void updateOrder(int idx) {
+        String query = "update orders set status = ? where id = ?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setString(1, "Livrat");
+            preparedStatement.setInt(2, idx);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void deleteOrder(int nr) {
+        String query = "delete from order_foods where orderId = ?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setInt(1, nr);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        query = "delete from orders where id = ?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setInt(1, nr);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

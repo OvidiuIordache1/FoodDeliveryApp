@@ -22,8 +22,10 @@ public class Manager {
     private List<Address> adrese;
     private List<Order> orders;
     private List<Food> foods;
-    private List<Restaurant> restaurants;
     private List<Review> reviews;
+    private List<Restaurant> restaurants;
+    TreeMap<Restaurant, Integer>  orderedRestaurants = new TreeMap<Restaurant, Integer>(new RestaurantAvgRev());
+
 
     public Manager() {
         try {
@@ -47,6 +49,9 @@ public class Manager {
 
         restaurants = restaurantDbService.getAll();
 
+        for (Restaurant restaurant : restaurants) {
+            orderedRestaurants.put(restaurant, restaurant.getRestaurantId_());
+        }
     }
 
 
@@ -105,6 +110,7 @@ public class Manager {
         }
     }
 
+
     public void adaugareAdresaClient() {
         Address newAddress = inputService.getAddress();
 
@@ -117,9 +123,71 @@ public class Manager {
         else {
             var idx = clients.indexOf(loggedInClient);
             loggedInClient.addAdresa(newAddress);
+            adrese.add(newAddress);
             clients.set(idx, loggedInClient);
+
+            addressDbService.saveAddress(newAddress);
         }
     }
+
+    public void modificareAdresaClient() {
+        Scanner in = new Scanner(System.in);
+
+        if (loggedInDriver != null) {
+            System.out.println("Only Users can modify an address!");
+        }
+        else if (loggedInClient == null) {
+            System.out.println("You must log in!");
+        }
+        else {
+            if (loggedInClient.getAdrese().size() > 0) {
+                loggedInClient.showAdrese();
+                System.out.println("Introdu nr. adresei :");
+                int nr = in.nextInt();
+
+                Address adr = loggedInClient.getAdrese().get(nr - 1);
+
+
+                System.out.println(adr.getAdresaId());
+
+
+                System.out.println("Introdu adresa noua :");
+                Address newAddress = inputService.getAddress();
+
+                adrese.set(adr.getAdresaId() - 1, newAddress);
+                loggedInClient.getAdrese().set(nr - 1, newAddress);
+                clients.set(clients.indexOf(loggedInClient), loggedInClient);
+
+                addressDbService.updateAddress(adr.getAdresaId(), newAddress);
+            }
+        }
+    }
+
+    public void stergereAdresaClient() {
+        Scanner in = new Scanner(System.in);
+
+        if (loggedInDriver != null) {
+            System.out.println("Only Users can modify an address!");
+        }
+        else if (loggedInClient == null) {
+            System.out.println("You must log in!");
+        }
+        else {
+            var idx = clients.indexOf(loggedInClient);
+            if (loggedInClient.getAdrese().size() > 0) {
+                loggedInClient.showAdrese();
+                System.out.println("Introdu nr. adresei :");
+                int nr = in.nextInt();
+
+                adrese.remove(nr - 1);
+                loggedInClient.getAdrese().remove(nr - 1);
+                clients.set(idx, loggedInClient);
+
+                addressDbService.deleteAddress(nr);
+            }
+        }
+    }
+
 
     public void addRestaurant() {
         Restaurant restaurant = inputService.getRestaurant();
@@ -135,14 +203,76 @@ public class Manager {
         restaurantDbService.saveRestaurant(restaurant);
     }
 
+    public void modificareFood() {
+        Scanner in = new Scanner(System.in);
+
+        afisareRestaurante();
+        System.out.println("Introdu nr. restaurantului :");
+        int idxRestaurant = in.nextInt();
+
+        Restaurant restaurant = restaurants.get(idxRestaurant - 1);
+        for (Food f: restaurant.getMeniu()) {
+            System.out.println(f);
+        }
+
+        System.out.println("Introdu nr. food :");
+        int idxFood = in.nextInt();
+
+        Food newfood = inputService.getFood();
+
+        foodDbService.updateFood(idxFood, newfood);
+        foods = foodDbService.getAll();
+        orders = orderDbService.getAll();
+        restaurants = restaurantDbService.getAll();
+    }
+
+    public void stergereFood() {
+        Scanner in = new Scanner(System.in);
+
+        afisareRestaurante();
+        System.out.println("Introdu nr. restaurantului :");
+        int idxRestaurant = in.nextInt();
+
+        Restaurant restaurant = restaurants.get(idxRestaurant - 1);
+        for (Food f: restaurant.getMeniu()) {
+            System.out.println(f);
+        }
+
+        System.out.println("Introdu nr. food :");
+        int idxFood = in.nextInt();
+
+        foodDbService.deleteFood(idxFood);
+        foods = foodDbService.getAll();
+        orders = orderDbService.getAll();
+
+    }
+
+
 
     public void afisareRestaurante() {
         if (restaurants.size() > 0) {
             int i = 1;
-            for (Restaurant restaurant:restaurants) {
+            for (Restaurant restaurant: restaurants) {
                 System.out.println(i + ". " + restaurant);
                 i += 1;
             }
+        }
+        else {
+            System.out.println("Nu exista restaurante.");
+        }
+    }
+
+    public void afisareRestauranteDupaReviews() {
+        Scanner in = new Scanner(System.in);
+        if (orderedRestaurants.size() > 0) {
+            int i = 1;
+            System.out.println("Introdu nr. de restaurante : (din " + orderedRestaurants.size() + ")");
+            int nr = in.nextInt();
+            while (i <= nr)
+                for (Restaurant restaurant: orderedRestaurants.keySet()) {
+                    System.out.println(i + ". " + restaurant);
+                    i += 1;
+                }
         }
         else {
             System.out.println("Nu exista restaurante.");
@@ -184,6 +314,7 @@ public class Manager {
         }
     }
 
+
     public void creareReviewRestaurant() {
         if (loggedInClient != null){
             Review review = inputService.getReview(loggedInClient);
@@ -207,6 +338,55 @@ public class Manager {
             System.out.println("You must log in!");
         }
     }
+
+    public void modificareReviewRestaurant() {
+        Scanner in = new Scanner(System.in);
+
+        if (loggedInDriver != null) {
+            System.out.println("Only Users can modify an address!");
+        }
+        else if (loggedInClient == null) {
+            System.out.println("You must log in!");
+        }
+        else {
+            List<Review> reviewList = reviews.stream().filter(review1 -> review1.getUser() == loggedInClient.getUserId()).toList();
+            for (Review r: reviewList) {
+                System.out.println(r);
+            }
+            System.out.println("Introdu nr. review :");
+            int idx = Integer.parseInt(in.nextLine());
+            System.out.println("Noul Mesaj:");
+            String msg = in.nextLine();
+            System.out.println("Nour nr (0-5): ");
+            int nr = in.nextInt();
+            reviewDbService.updateReview(idx, msg, nr);
+            reviews = reviewDbService.getAll();
+        }
+    }
+
+    public void stergereReviewRestaurant() {
+        Scanner in = new Scanner(System.in);
+
+        if (loggedInDriver != null) {
+            System.out.println("Only Users can modify an address!");
+        }
+        else if (loggedInClient == null) {
+            System.out.println("You must log in!");
+        }
+        else {
+            List<Review> reviewList = reviews.stream().filter(review1 -> review1.getUser() == loggedInClient.getUserId()).toList();
+            for (Review r: reviewList) {
+                System.out.println(r);
+            }
+            System.out.println("Introdu nr. review :");
+            int idx = Integer.parseInt(in.nextLine());
+
+            reviewDbService.deleteReview(idx);
+            reviews = reviewDbService.getAll();
+            restaurants = restaurantDbService.getAll();
+        }
+    }
+
 
     public void creareReviewDriver() {
         if (loggedInClient != null){
@@ -269,6 +449,54 @@ public class Manager {
         }
         else {
             System.out.println("You must log in!");
+        }
+    }
+
+    public void modificareOrder() {
+        Scanner in = new Scanner(System.in);
+
+        if (loggedInDriver != null) {
+            System.out.println("Only Users can modify an address!");
+        }
+        else if (loggedInClient == null) {
+            System.out.println("You must log in!");
+        }
+        else {
+            List<Order> order_ = orders.stream().filter(order -> order.getUserId() == loggedInClient.getUserId()).toList();
+            for (Order o: order_) {
+                System.out.println(o);
+            }
+            System.out.println("Introdu nr. order :");
+            int idx = in.nextInt();
+
+            Order order = order_.get(idx - 1);
+
+            orderDbService.updateOrder(order.getOrderId());
+            orders = orderDbService.getAll();
+        }
+    }
+
+    public void stergereOrder() {
+        Scanner in = new Scanner(System.in);
+
+        if (loggedInDriver != null) {
+            System.out.println("Only Users can modify an address!");
+        }
+        else if (loggedInClient == null) {
+            System.out.println("You must log in!");
+        }
+        else {
+            List<Order> order_ = orders.stream().filter(order -> order.getUserId() == loggedInClient.getUserId()).toList();
+            for (Order o: order_) {
+                System.out.println(o);
+            }
+            System.out.println("Introdu nr. order :");
+            int idx = in.nextInt();
+
+            Order order = order_.get(idx - 1);
+
+            orderDbService.deleteOrder(order.getOrderId());
+            orders = orderDbService.getAll();
         }
     }
 }

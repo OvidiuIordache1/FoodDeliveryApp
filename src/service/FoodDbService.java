@@ -52,4 +52,45 @@ public class FoodDbService{
 
         return foods;
     }
+
+    public void updateFood(int idx, Food food) {
+        String query = "update foods set nume = ?, continut = ?, descriere = ?, pret = ?" +
+                " where id = ?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setString(1, food.getNume());
+            preparedStatement.setString(2, Arrays.toString(food.getContinut()));
+            preparedStatement.setString(3, food.getDescriere());
+            preparedStatement.setDouble(4, food.getPret());
+            preparedStatement.setInt(5, idx);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void deleteFood(int nr) {
+        String query = "delete from order_foods where foodId = ?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setInt(1, nr);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        query = "delete from menu where idFood = ?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setInt(1, nr);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        query = "delete from foods where id = ?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setInt(1, nr);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }

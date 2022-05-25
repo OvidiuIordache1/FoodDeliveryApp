@@ -1,6 +1,7 @@
 package src.model;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class Restaurant {
@@ -94,7 +95,7 @@ public class Restaurant {
         if (reviews.size() > 0) {
             return suma / reviews.size();
         }
-        return -1;
+        return suma;
     }
 
     public void addReview(Review review) {
@@ -147,3 +148,4 @@ public class Restaurant {
                 '}';
     }
 }
+
